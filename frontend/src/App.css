@@ -1,0 +1,65 @@
+.container {
+    margin-top: 20px;
+}
+
+.fa-list-ul {
+    margin-right: 0px;
+}
+
+.nav-logo {
+    margin-left: 20px;
+    height: 50px;
+    width: 50px;
+    padding: 5px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bolder;
+    /* line-height: 1.2rem; */
+    position: relative;
+    top: 10px;
+    box-shadow: 5px 5px 10px #333333;
+}
+
+.logo-text {
+    margin-left: 20px;
+}
+
+#login-modal,
+#register-modal {
+    height: 320px;
+}
+
+.login-btn,
+.register-btn {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-btn a,
+.register-btn a {
+    width: 200px;
+}
+
+.input-field input[type=text]:focus,
+.input-field input[type=password]:focus {
+    border-bottom: 2px solid #3f51b5 !important;
+    box-shadow: none !important;
+}
+
+.fa-file-user,
+.fa-sign-out-alt {
+    padding-left: 3px !important;
+}
+
+@media (max-width: 500px) {
+    .nav-logo {
+        display: none;
+    }
+
+    .login-btn a,
+    .register-btn a {
+    width: 100%;
+}
+}

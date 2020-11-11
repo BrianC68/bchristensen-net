@@ -6,6 +6,8 @@ import LoginBtn from '../auth/LoginBtn';
 import LoginModal from '../auth/LoginModal';
 import RegisterBtn from '../auth/RegisterBtn';
 import RegisterModal from '../auth/RegisterModal';
+import IntroText from '../shoppinglist/IntroText';
+import ShoppingLists from '../shoppinglist/ShoppingLists';
 import { loadUser, clearError, clearMessage } from '../../actions/authActions';
 
 const ShoppingList = ({ isAuthenticated, loadUser, message, error, clearError, clearMessage }) => {
@@ -26,16 +28,14 @@ const ShoppingList = ({ isAuthenticated, loadUser, message, error, clearError, c
   return (
     <Fragment>
       <div>
-        <h2>Shopping List Frontend and API</h2>
-        <p className="flow-text">
-          This is a shopping list web app using React, Redux and Axios on the
-          frontend and Django REST Framework for the backend API.  Give it a try,
-          register your own username or login with username <span className="amber-text text-darken-4">guest</span> and password <span className="amber-text text-darken-4">SecretPassword</span>.
-        </p>
+        {/* Content shown when user is not logged in */}
+        {isAuthenticated ? '' : <IntroText />}
         {isAuthenticated ? '' : <LoginBtn />}
         {isAuthenticated ? '' : <LoginModal />}
         {isAuthenticated ? '' : <RegisterBtn />}
         {isAuthenticated ? '' : <RegisterModal />}
+        {/* Content shown when user is logged in */}
+        {isAuthenticated ? <ShoppingLists /> : ''}
       </div>
     </Fragment>
   )

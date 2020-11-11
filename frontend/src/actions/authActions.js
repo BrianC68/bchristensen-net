@@ -55,7 +55,6 @@ export const login = (credentials, csrfCookie) => async dispatch => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': csrfCookie
     }
   }
 

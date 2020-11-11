@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.db.models.fields import related
 
 User = get_user_model()
 
@@ -49,6 +48,6 @@ class ShoppingListItem(models.Model):
 
     class Meta:
         # Default ordering by department name ascending
-        ordering = ['item']
+        ordering = ['-department']
         # Prevent duplicate entries
         unique_together = ['user', 'item', 'shopping_list']

@@ -7,6 +7,11 @@ import NavBar from './components/layout/NavBar';
 import Home from './components/pages/Home';
 import ShoppingList from './components/pages/ShoppingList';
 import store from './store';
+import setAuthTokenHeader from './utils/setAuthTokenHeader';
+
+if (localStorage.token) {
+  setAuthTokenHeader(localStorage.token);
+}
 
 const App = () => {
   useEffect(() => {

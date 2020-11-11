@@ -8,9 +8,6 @@ const LoginModal = ({ login }) => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
 
-  // let csrfCookie = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*=\s*([^;]*).*$)|^.*$/, "$1");
-  let csrfCookie = '';
-
   const onLogin = () => {
     if (username === '' || password === '') {
       M.toast({ html: 'Please enter both your username and password!' });
@@ -19,7 +16,7 @@ const LoginModal = ({ login }) => {
         username: username,
         password: password
       }
-      login(credentials, csrfCookie);
+      login(credentials);
       setUserName('');
       setPassword('');
     }

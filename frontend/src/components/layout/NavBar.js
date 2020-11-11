@@ -4,13 +4,16 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import M from 'materialize-css/dist/js/materialize.min.js';
 import { logout } from '../../actions/authActions';
+import { clearCurrent, clearLists } from '../../actions/listActions';
 
-const NavBar = ({ logout, isAuthenticated }) => {
+const NavBar = ({ logout, isAuthenticated, clearCurrent, clearLists }) => {
   useEffect(() => {
   }, [isAuthenticated])
 
   const onLogout = () => {
     logout();
+    clearCurrent();
+    clearLists();
     M.toast({ html: '<strong>You have been logged out!</strong>', displayLength: 5000, classes: 'amber black-text' })
   }
 
@@ -30,16 +33,16 @@ const NavBar = ({ logout, isAuthenticated }) => {
     <div>
       <nav>
         <div className="nav-wrapper grey darken-3">
-          <a href="/" className="brand-logo">
+          <Link to="/" className="brand-logo">
             <span className="nav-logo amber darken-2 indigo-text">BC</span>
             <span className="logo-text amber-text text-darken-2">bchristensen</span>
             <span className="amber-text">.net</span>
-          </a>
+          </Link>
           <a href="#!" data-target="mobile-side-nav" className="sidenav-trigger amber-text"><i className="material-icons">menu</i></a>
           <ul id="nav-mobile" className="right hide-on-med-and-down">
             <li><Link to="/shopping-list-api/" className="amber-text">Shopping List API</Link></li>
             <li><a href="#!" className="amber-text">Experience</a></li>
-            <li><a href="#!" className="amber-text">Python</a></li>
+            <li><a href="#!" className="amber-text">Projects</a></li>
             {isAuthenticated ? logoutLink : ''}
           </ul>
         </div>
@@ -48,7 +51,7 @@ const NavBar = ({ logout, isAuthenticated }) => {
         <li><Link to="/" className="amber-text"><i className="far fa-home fa-lg amber-text"></i> Home</Link></li>
         <li><Link to="/shopping-list-api/" className="amber-text"><i className="far fa-list-ul fa-lg amber-text"></i> Shopping List API</Link></li>
         <li><a href="!#" className="amber-text"><i className="far fa-file-user fa-lg amber-text"></i> Experience</a></li>
-        <li><a href="!#" className="amber-text"><i className="far fa-brackets-curly fa-lg amber-text"></i> Python</a></li>
+        <li><a href="!#" className="amber-text"><i className="far fa-brackets-curly fa-lg amber-text"></i> Projects</a></li>
         {isAuthenticated ? sideNavLogoutLink : ''}
       </ul>
     </div>
@@ -63,4 +66,4 @@ NavBar.propTypes = {
   isAuthenticated: PropTypes.bool,
 }
 
-export default connect(mapStateToProps, { logout })(NavBar);
+export default connect(mapStateToProps, { logout, clearCurrent, clearLists })(NavBar);

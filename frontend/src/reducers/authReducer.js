@@ -7,7 +7,8 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   CLEAR_ERROR,
-  CLEAR_MESSAGE
+  CLEAR_MESSAGE,
+  // SET_LOADING
 } from '../actions/types';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   user: null,
   error: '',
   message: '',
+  // loading: true
 };
 
 const auth = (state = initialState, action) => {
@@ -28,7 +30,8 @@ const auth = (state = initialState, action) => {
           id: localStorage.user_id
         },
         isAuthenticated: true,
-        error: ''
+        error: '',
+        // loading: false
       }
     case LOGIN_SUCCESS:
       localStorage.setItem('token', action.payload.token);
@@ -41,6 +44,7 @@ const auth = (state = initialState, action) => {
         isAuthenticated: true,
         error: '',
         message: 'You are now logged in!',
+        // loading: false
       }
     case REGISTER_SUCCESS:
       return {
@@ -52,6 +56,7 @@ const auth = (state = initialState, action) => {
         isAuthenticated: false,
         error: '',
         message: 'You may now log in to your account',
+        // loading: false
       }
     case AUTH_FAIL:
       return {
@@ -59,6 +64,7 @@ const auth = (state = initialState, action) => {
         token: null,
         isAuthenticated: false,
         user: null,
+        // loading: false
         // error:
       }
     case LOGIN_FAIL:
@@ -70,6 +76,7 @@ const auth = (state = initialState, action) => {
         user: null,
         error: action.payload,
         message: '',
+        // loading: false
       }
     case LOGOUT:
       localStorage.removeItem('token');
@@ -82,6 +89,7 @@ const auth = (state = initialState, action) => {
         user: null,
         error: '',
         message: '',
+        // loading: false
       }
     case CLEAR_ERROR:
       return {

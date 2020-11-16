@@ -2,7 +2,7 @@ import React, { useEffect, Fragment } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import 'materialize-css/dist/css/materialize.min.css';
-import M from 'materialize-css/dist/js/materialize.min.js';
+// import M from 'materialize-css/dist/js/materialize.min.js';
 import NavBar from './components/layout/NavBar';
 import Home from './components/pages/Home';
 import ShoppingList from './components/pages/ShoppingList';
@@ -16,7 +16,7 @@ if (localStorage.token) {
 const App = () => {
   useEffect(() => {
     // Initializes Materialize JS
-    M.AutoInit();
+    // M.AutoInit();
   });
 
   return (

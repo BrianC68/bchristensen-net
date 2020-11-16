@@ -19,6 +19,7 @@ class DepartmentList(ListCreateAPIView):
 
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
     
     def get_queryset(self):
         queryset = Department.objects.filter(shopping_list=self.kwargs['pk'], user=self.request.user)
@@ -34,6 +35,7 @@ class DepartmentDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = DepartmentDetailSerializer
     # queryset = Department.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
 
     def perform_create(self, serializer):
       serializer.save(user=self.request.user)

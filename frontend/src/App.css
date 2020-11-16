@@ -2,7 +2,8 @@
     margin-top: 20px;
 }
 
-.btn-large {
+.btn-large,
+.btn {
     text-transform: none;
 }
 
@@ -26,6 +27,10 @@
     box-shadow: 5px 5px 10px #333333;
 }
 
+.nav-username {
+    padding: 0px 15px;
+}
+
 .logo-text {
     margin-left: 20px;
 }
@@ -33,6 +38,10 @@
 #login-modal,
 #register-modal {
     height: 320px;
+}
+
+.edit-item-modal {
+    height: 350px;
 }
 
 #new-list-modal {
@@ -57,7 +66,8 @@
 }
 
 .fa-file-user,
-.fa-sign-out-alt {
+.fa-sign-out-alt,
+.fa-user {
     padding-left: 3px !important;
 }
 
@@ -76,6 +86,21 @@
 
 .collection-item .row {
     margin-bottom: 5px;
+}
+
+.collapsible-body.saved-items-collapse {
+   padding: 0 !important;
+}
+
+.preloader-wrapper {
+    margin: auto;
+}
+
+.preloader-container {
+    display: flex;
+    width: 100%;
+    height: 500px;
+    align-items: center;
 }
 
 @media (max-width: 500px) {

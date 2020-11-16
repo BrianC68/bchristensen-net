@@ -29,13 +29,22 @@ const NavBar = ({ logout, isAuthenticated, clearCurrent, clearLists }) => {
     </Fragment>
   )
 
+  const userName = (
+    <Fragment>
+      <li className="indigo"><span className="amber-text nav-username"><i className="far fa-user fa-lg amber-text"></i> {localStorage.getItem('username')}</span></li>
+    </Fragment>
+  )
+
   return (
     <div>
       <nav>
         <div className="nav-wrapper grey darken-3">
           <Link to="/" className="brand-logo">
             <span className="nav-logo amber darken-2 indigo-text">BC</span>
-            <span className="logo-text amber-text text-darken-2">bchristensen</span>
+
+            <span className="logo-text amber-text text-darken-2">
+              <span className="amber-text">b</span>christensen
+            </span>
             <span className="amber-text">.net</span>
           </Link>
           <a href="#!" data-target="mobile-side-nav" className="sidenav-trigger amber-text"><i className="material-icons">menu</i></a>
@@ -43,6 +52,7 @@ const NavBar = ({ logout, isAuthenticated, clearCurrent, clearLists }) => {
             <li><Link to="/shopping-list-api/" className="amber-text">Shopping List API</Link></li>
             <li><a href="#!" className="amber-text">Experience</a></li>
             <li><a href="#!" className="amber-text">Projects</a></li>
+            {isAuthenticated ? userName : ''}
             {isAuthenticated ? logoutLink : ''}
           </ul>
         </div>

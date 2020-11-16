@@ -48,6 +48,6 @@ class ShoppingListItem(models.Model):
 
     class Meta:
         # Default ordering by department name ascending
-        ordering = ['-department']
+        ordering = ['department']
         # Prevent duplicate entries
         unique_together = ['user', 'item', 'shopping_list']

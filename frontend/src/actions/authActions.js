@@ -10,23 +10,23 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   CLEAR_ERROR,
-  CLEAR_MESSAGE
+  CLEAR_MESSAGE,
 } from '../actions/types';
 
 export const loadUser = () => async dispatch => {
-  if (localStorage.token) {
-    // set Authorization token header in axios
-    setAuthTokenHeader(localStorage.token);
-    if (localStorage.username && localStorage.user_id) {
-      dispatch({
-        type: USER_LOADED,
-      });
-    } else {
-      dispatch({
-        type: AUTH_FAIL,
-      })
-    }
+  // if (localStorage.token) {
+  //   // set Authorization token header in axios
+  //   setAuthTokenHeader(localStorage.token);
+  if (localStorage.username && localStorage.user_id) {
+    dispatch({
+      type: USER_LOADED,
+    });
+  } else {
+    dispatch({
+      type: AUTH_FAIL,
+    })
   }
+  // }
 }
 
 export const register = (credentials) => async dispatch => {
@@ -65,6 +65,10 @@ export const login = (credentials, csrfCookie) => async dispatch => {
       type: LOGIN_SUCCESS,
       payload: res.data
     });
+    // set Authorization token header in axios
+    if (localStorage.token) {
+      setAuthTokenHeader(localStorage.token);
+    }
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,

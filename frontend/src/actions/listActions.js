@@ -24,11 +24,15 @@ const jsonHeader = {
   }
 }
 
+// const apiServer = 'http://127.0.0.1:8000';
+const apiServer = 'http://bchristensen.pythonanywhere.com';
+
+
 export const getLists = () => async dispatch => {
   // Returns all shopping lists for a particular user
 
   try {
-    const res = await axios.get('/api/shopping-lists/');
+    const res = await axios.get(`${apiServer}/api/shopping-lists/`);
     dispatch({
       type: GET_LISTS,
       payload: res.data
@@ -45,7 +49,7 @@ export const addNewList = list => async dispatch => {
   // Add a new shopping list
 
   try {
-    const res = await axios.post(`/api/shopping-lists/`, list, jsonHeader);
+    const res = await axios.post(`${apiServer}/api/shopping-lists/`, list, jsonHeader);
 
     dispatch({
       type: ADD_LIST,
@@ -62,7 +66,7 @@ export const addNewList = list => async dispatch => {
 export const getList = id => async dispatch => {
   // Return a particular shopping list
   try {
-    const res = await axios.get(`/api/shopping-list/${id}/detail/`);
+    const res = await axios.get(`${apiServer}/api/shopping-list/${id}/detail/`);
 
     dispatch({
       type: GET_LIST,
@@ -79,7 +83,7 @@ export const getList = id => async dispatch => {
 export const deleteList = id => async dispatch => {
   // Permanently delete a list
   try {
-    await axios.delete(`/api/shopping-list/${id}`);
+    await axios.delete(`${apiServer}/api/shopping-list/${id}`);
 
     dispatch({
       type: DELETE_LIST,
@@ -97,7 +101,7 @@ export const addItem = data => async dispatch => {
   // Adds a new item to the currentList
 
   try {
-    const res = await axios.post(`/api/shopping-list/${data.shopping_list}/items/`, data, jsonHeader);
+    const res = await axios.post(`${apiServer}/api/shopping-list/${data.shopping_list}/items/`, data, jsonHeader);
 
     dispatch({
       type: ADD_ITEM,
@@ -115,7 +119,7 @@ export const addSavedItem = data => async dispatch => {
   // Set on_list to true for a saved item
 
   try {
-    const res = await axios.put(`/api/shopping-list/item/${data.id}/`, data, jsonHeader);
+    const res = await axios.put(`${apiServer}/api/shopping-list/item/${data.id}/`, data, jsonHeader);
 
     dispatch({
       type: ADD_SAVED_ITEM,
@@ -131,7 +135,7 @@ export const addSavedItem = data => async dispatch => {
 
 export const updateItem = data => async dispatch => {
   try {
-    const res = await axios.put(`/api/shopping-list/item/${data.id}/`, data, jsonHeader);
+    const res = await axios.put(`${apiServer}/api/shopping-list/item/${data.id}/`, data, jsonHeader);
 
     dispatch({
       type: EDIT_ITEM,
@@ -149,7 +153,7 @@ export const removeItemFromList = (data, id) => async dispatch => {
   // Set on_list to false
 
   try {
-    const res = await axios.put(`/api/shopping-list/item/${id}/`, JSON.stringify(data), jsonHeader);
+    const res = await axios.put(`${apiServer}/api/shopping-list/item/${id}/`, JSON.stringify(data), jsonHeader);
 
     dispatch({
       type: REMOVE_ITEM,
@@ -165,7 +169,7 @@ export const removeItemFromList = (data, id) => async dispatch => {
 
 export const deleteItem = (id) => async dispatch => {
   try {
-    await axios.delete(`/api/shopping-list/item/${id}/`);
+    await axios.delete(`${apiServer}/api/shopping-list/item/${id}/`);
     dispatch({
       type: DELETE_ITEM,
       payload: id
@@ -180,7 +184,7 @@ export const deleteItem = (id) => async dispatch => {
 
 export const addDepartment = (data) => async dispatch => {
   try {
-    const res = await axios.post(`/api/shopping-list/${data.shopping_list}/depts/`, data, jsonHeader);
+    const res = await axios.post(`${apiServer}/api/shopping-list/${data.shopping_list}/depts/`, data, jsonHeader);
 
     dispatch({
       type: ADD_DEPARTMENT,

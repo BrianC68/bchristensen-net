@@ -13,6 +13,9 @@ import {
   CLEAR_MESSAGE,
 } from '../actions/types';
 
+// const apiServer = 'http://localhost:8000';
+const apiServer = 'http://bchristensen.pythonanywhere.com';
+
 export const loadUser = () => async dispatch => {
   // if (localStorage.token) {
   //   // set Authorization token header in axios
@@ -37,7 +40,7 @@ export const register = (credentials) => async dispatch => {
   }
 
   try {
-    const res = await axios.post('/api/users/register/', JSON.stringify(credentials), config);
+    const res = await axios.post(`${apiServer}/api/users/register/`, JSON.stringify(credentials), config);
 
     dispatch({
       type: REGISTER_SUCCESS,
@@ -51,7 +54,7 @@ export const register = (credentials) => async dispatch => {
   }
 }
 
-export const login = (credentials, csrfCookie) => async dispatch => {
+export const login = (credentials) => async dispatch => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +62,7 @@ export const login = (credentials, csrfCookie) => async dispatch => {
   }
 
   try {
-    const res = await axios.post('/api/users/auth/token/', JSON.stringify(credentials), config);
+    const res = await axios.post(`${apiServer}/api/users/auth/token/`, JSON.stringify(credentials), config);
 
     dispatch({
       type: LOGIN_SUCCESS,

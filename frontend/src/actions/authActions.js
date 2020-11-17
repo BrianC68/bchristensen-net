@@ -14,7 +14,7 @@ import {
 } from '../actions/types';
 
 // const apiServer = 'http://localhost:8000';
-const apiServer = 'http://bchristensen.pythonanywhere.com';
+const apiServer = 'https://bchristensen.pythonanywhere.com';
 
 export const loadUser = () => async dispatch => {
   // if (localStorage.token) {

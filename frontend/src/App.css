@@ -66,8 +66,7 @@
 }
 
 .fa-file-user,
-.fa-sign-out-alt,
-.fa-user {
+.fa-sign-out-alt {
     padding-left: 3px !important;
 }
 
@@ -120,6 +119,18 @@
     .collection-item {
          padding-left: 5px !important;
          padding-right: 5px !important;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    h4 {
+        font-size: 1.3rem;
     }
 
 }

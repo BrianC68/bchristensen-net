@@ -7,4 +7,5 @@ urlpatterns = [
     path('', index, name='index'),
     path('admin/', admin.site.urls),
     path('api/', include('shopping_list.urls')),
+    path('shopping-list-api/', index),
 ]

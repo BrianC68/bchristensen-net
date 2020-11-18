@@ -11,6 +11,7 @@ import {
   REGISTER_FAIL,
   CLEAR_ERROR,
   CLEAR_MESSAGE,
+  SET_AUTH_LOADING,
 } from '../actions/types';
 
 // const apiServer = 'http://localhost:8000';
@@ -24,11 +25,12 @@ export const loadUser = () => async dispatch => {
     dispatch({
       type: USER_LOADED,
     });
-  } else {
-    dispatch({
-      type: AUTH_FAIL,
-    })
   }
+  // else {
+  //   dispatch({
+  //     type: AUTH_FAIL,
+  //   })
+  // }
   // }
 }
 
@@ -90,4 +92,8 @@ export const clearError = () => dispatch => {
 
 export const clearMessage = () => dispatch => {
   dispatch({ type: CLEAR_MESSAGE });
+}
+
+export const setAuthLoading = () => dispatch => {
+  dispatch({ type: SET_AUTH_LOADING });
 }

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import M from 'materialize-css/dist/js/materialize.min.js';
-import { login } from '../../actions/authActions';
+import { login, setAuthLoading } from '../../actions/authActions';
 
-const LoginModal = ({ login }) => {
+const LoginModal = ({ login, setAuthLoading }) => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,6 +17,7 @@ const LoginModal = ({ login }) => {
         password: password
       }
       login(credentials);
+      setAuthLoading();
       setUserName('');
       setPassword('');
     }
@@ -54,6 +55,7 @@ const LoginModal = ({ login }) => {
 
 LoginModal.propTypes = {
   login: PropTypes.func.isRequired,
+  setAuthLoading: PropTypes.func.isRequired,
 }
 
-export default connect(null, { login })(LoginModal);
+export default connect(null, { login, setAuthLoading })(LoginModal);

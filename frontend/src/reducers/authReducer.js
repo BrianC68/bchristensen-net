@@ -8,7 +8,7 @@ import {
   REGISTER_FAIL,
   CLEAR_ERROR,
   CLEAR_MESSAGE,
-  // SET_LOADING
+  SET_AUTH_LOADING
 } from '../actions/types';
 
 const initialState = {
@@ -17,7 +17,7 @@ const initialState = {
   user: null,
   error: '',
   message: '',
-  // loading: true
+  loading: false
 };
 
 const auth = (state = initialState, action) => {
@@ -44,7 +44,7 @@ const auth = (state = initialState, action) => {
         isAuthenticated: true,
         error: '',
         message: 'You are now logged in!',
-        // loading: false
+        loading: false
       }
     case REGISTER_SUCCESS:
       return {
@@ -64,7 +64,7 @@ const auth = (state = initialState, action) => {
         token: null,
         isAuthenticated: false,
         user: null,
-        // loading: false
+        loading: false
         // error:
       }
     case LOGIN_FAIL:
@@ -76,7 +76,7 @@ const auth = (state = initialState, action) => {
         user: null,
         error: action.payload,
         message: '',
-        // loading: false
+        loading: false
       }
     case LOGOUT:
       localStorage.removeItem('token');
@@ -100,6 +100,11 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         message: ''
+      }
+    case SET_AUTH_LOADING:
+      return {
+        ...state,
+        loading: true
       }
     default:
       return state;

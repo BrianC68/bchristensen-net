@@ -8,9 +8,10 @@ import RegisterBtn from '../auth/RegisterBtn';
 import RegisterModal from '../auth/RegisterModal';
 import IntroText from '../shoppinglist/IntroText';
 import ShoppingLists from '../shoppinglist/ShoppingLists';
+import Preloader from '../layout/Preloader';
 import { loadUser, clearError, clearMessage } from '../../actions/authActions';
 
-const ShoppingList = ({ isAuthenticated, loadUser, message, error, clearError, clearMessage }) => {
+const ShoppingList = ({ isAuthenticated, loadUser, message, error, loading, clearError, clearMessage }) => {
   useEffect(() => {
     loadUser();
     M.AutoInit();
@@ -29,13 +30,29 @@ const ShoppingList = ({ isAuthenticated, loadUser, message, error, clearError, c
     <Fragment>
       <div>
         {/* Content shown when user is not logged in */}
-        {isAuthenticated ? '' : <IntroText />}
-        {isAuthenticated ? '' : <LoginBtn />}
+        {!isAuthenticated && !loading ?
+          <Fragment>
+            <IntroText />
+            <LoginBtn />
+            <LoginModal />
+            <RegisterBtn />
+            <RegisterModal />
+
+          </Fragment>
+          :
+          <Fragment>
+            {loading ?
+              <Preloader /> :
+              <ShoppingLists />
+            }
+          </Fragment>
+        }
+        {/* {isAuthenticated ? '' : <LoginBtn />}
         {isAuthenticated ? '' : <LoginModal />}
         {isAuthenticated ? '' : <RegisterBtn />}
-        {isAuthenticated ? '' : <RegisterModal />}
+        {isAuthenticated ? '' : <RegisterModal />} */}
         {/* Content shown when user is logged in */}
-        {isAuthenticated ? <ShoppingLists /> : ''}
+
       </div>
     </Fragment>
   )
@@ -45,6 +62,7 @@ const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   message: state.auth.message,
   error: state.auth.error,
+  loading: state.auth.loading,
 })
 
 ShoppingList.propTypes = {

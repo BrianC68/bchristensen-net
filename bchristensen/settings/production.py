@@ -3,7 +3,7 @@ import os
 
 DEBUG = False
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALLOWED_HOSTS = ['bchristensen.pythonanywhere.com']
+ALLOWED_HOSTS = ['bchristensen.net']
 
 DATABASES = {
     'default': {

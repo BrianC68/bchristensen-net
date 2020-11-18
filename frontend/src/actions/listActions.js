@@ -25,7 +25,7 @@ const jsonHeader = {
 }
 
 // const apiServer = 'http://127.0.0.1:8000';
-const apiServer = 'https://bchristensen.pythonanywhere.com';
+const apiServer = 'https://www.bchristensen..net';
 
 
 export const getLists = () => async dispatch => {

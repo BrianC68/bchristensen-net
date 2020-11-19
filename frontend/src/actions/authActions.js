@@ -3,7 +3,7 @@ import setAuthTokenHeader from '../utils/setAuthTokenHeader';
 
 import {
   USER_LOADED,
-  AUTH_FAIL,
+  // AUTH_FAIL,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,

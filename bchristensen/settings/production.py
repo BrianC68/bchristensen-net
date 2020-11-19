@@ -19,6 +19,7 @@ DATABASES = {
     }
 }
 
+STATIC_ROOT = BASE_DIR / 'static'
 
 try:
     from .local import *

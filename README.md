@@ -1,4 +1,2 @@
 # bchristensen-net
-This is a personal website where I will display some of my coding projects.
-
-
+This is the Django REST Framework backend api for my website.

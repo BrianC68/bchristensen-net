@@ -43,7 +43,7 @@ class ShoppingListItem(models.Model):
     shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE, related_name='list_items')
     item = models.CharField(max_length=255)
     quantity = models.IntegerField(default=1, blank=False, null=False)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, blank=True, null=True)
     on_list = models.BooleanField(default=True)
 
     class Meta:

@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIView, \
                     RetrieveUpdateDestroyAPIView, CreateAPIView
-from rest_framework import permissions
-from rest_framework import authentication
-from rest_framework.permissions import AllowAny
+from rest_framework import permissions, authentication, status
+from rest_framework.serializers import ListSerializer
+from rest_framework.status import HTTP_404_NOT_FOUND
 from .models import Department, ShoppingList, ShoppingListItem
 from .serializers import DepartmentDetailSerializer, DepartmentSerializer, ShoppingListRUDSerializer, ShoppingListSerializer, \
                     ShoppingListItemSerializer, ShoppingListDetailSerializer, ShoppingListItemDetailSerializer, UserSerializer
@@ -22,7 +23,9 @@ class DepartmentList(ListCreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     
     def get_queryset(self):
-        queryset = Department.objects.filter(shopping_list=self.kwargs['pk'], user=self.request.user)
+        user_depts = Department.objects.filter(shopping_list=self.kwargs['pk'], user=self.request.user)
+        shared_depts = Department.objects.filter(shopping_list=self.kwargs['pk'], shopping_list__shares=self.request.user)
+        queryset = user_depts | shared_depts
         return queryset
     
     def perform_create(self, serializer):
@@ -41,8 +44,10 @@ class DepartmentDetail(RetrieveUpdateDestroyAPIView):
       serializer.save(user=self.request.user)
         
     def get_queryset(self):
-        queryset = Department.objects.filter(id=self.kwargs['pk'], user=self.request.user)
-        return queryset
+       user_depts = Department.objects.filter(id=self.kwargs['pk'], user=self.request.user)
+       shared_depts = Department.objects.filter(id=self.kwargs['pk'], shopping_list__shares=self.request.user)
+       queryset = user_depts | shared_depts
+       return queryset
 
 
 class ShoppingLists(ListCreateAPIView):
@@ -53,7 +58,11 @@ class ShoppingLists(ListCreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
     def get_queryset(self):
-        queryset = ShoppingList.objects.filter(user=self.request.user)
+        user_lists = ShoppingList.objects.filter(user=self.request.user)
+        shared_lists = ShoppingList.objects.filter(shares=self.request.user)
+        queryset = user_lists | shared_lists
+        # Remove duplicate model instances because of "shares" manytomanyfield.
+        queryset = queryset.distinct()
         return queryset
 
     def perform_create(self, serializer):
@@ -71,6 +80,25 @@ class ShoppingListRUD(RetrieveUpdateDestroyAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def put(self, request, pk, format=None):
+        '''Overwrite put method in case a username is passed in when a user shares the list with another user.'''
+        list = self.get_object()
+        if request.data['username']:
+            try:
+                share_user = User.objects.get(username=request.data['username'])
+                if request.data['action'] == 'remove':
+                    list.shares.remove(share_user.id)
+                else:
+                    list.shares.add(share_user.id)
+            except User.DoesNotExist:
+                return Response({"non_field_errors": ["User does not exist!"]}, status=HTTP_404_NOT_FOUND)
+                
+        serializer = ShoppingListSerializer(list, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ShoppingListItems(ListCreateAPIView):
     '''Display all shopping list items, or create a new one.'''
@@ -80,7 +108,9 @@ class ShoppingListItems(ListCreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
     def get_queryset(self):
-        queryset = ShoppingListItem.objects.filter(shopping_list=self.kwargs['pk'], user=self.request.user)
+        user_items = ShoppingListItem.objects.filter(shopping_list=self.kwargs['pk'], user=self.request.user)
+        shared_items = ShoppingListItem.objects.filter(shopping_list=self.kwargs['pk'], shares=self.request.user)
+        queryset = user_items |shared_items
         return queryset
 
     def perform_create(self, serializer):
@@ -107,7 +137,9 @@ class ShoppingListDetail(ListAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     
     def get_queryset(self):
-        queryset = ShoppingList.objects.filter(user=self.request.user, id=self.kwargs['pk'])
+        user_lists = ShoppingList.objects.filter(user=self.request.user, id=self.kwargs['pk'])
+        shared_lists = ShoppingList.objects.filter(shares=self.request.user, id=self.kwargs['pk'])
+        queryset = user_lists | shared_lists
         return queryset
 
     def perform_create(self, serializer):

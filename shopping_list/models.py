@@ -25,9 +25,10 @@ class ShoppingList(models.Model):
     '''Model that holds a users shopping lists.'''
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shopping_lists')
     name = models.CharField(max_length=255)
+    shares = models.ManyToManyField(User, blank=True)
 
     class Meta:
-        # Default ordering by department name ascending
+        # Default ordering by shopping list name ascending
         ordering = ['name']
         # Prevent duplicate entries
         unique_together = ['user', 'name']

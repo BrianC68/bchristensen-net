@@ -47,9 +47,11 @@ class ShoppingListItemSerializer(serializers.ModelSerializer):
 
 
 class ShoppingListItemDetailSerializer(serializers.ModelSerializer):
+    added_by = serializers.ReadOnlyField(source='user.username')
+    
     class Meta:
         model = ShoppingListItem
-        fields = ['id', 'user', 'shopping_list', 'item', 'quantity', 'department', 'on_list']
+        fields = ['id', 'user', 'added_by', 'shopping_list', 'item', 'quantity', 'department', 'on_list']
 
 
 class ShoppingListSerializer(serializers.ModelSerializer):

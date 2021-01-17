@@ -1,8 +1,17 @@
+from django.db.models.query import QuerySet
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Department, ShoppingList, ShoppingListItem
+from .models import Department, ShoppingList, ShoppingListItem, UserProfile
 
 User = get_user_model()
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserProfile
+
+        fields = ['id', 'user', 'push_token']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,11 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
     # departments = serializers.PrimaryKeyRelatedField(many=True, queryset=Department.objects.all())
     # shopping_lists = serializers.PrimaryKeyRelatedField(many=True, queryset=ShoppingList.objects.all())
     # list_items = serializers.PrimaryKeyRelatedField(many=True, queryset=ShoppingListItem.objects.all())
+    profile = UserProfileSerializer(read_only=True, many=True)
     
     class Meta:
         model = User
         # fields = ['id', 'username', 'departments', 'shopping_lists', 'list_items']
-        fields = ['id', 'username', 'password']
+        fields = ['id', 'username', 'password', 'profile']
         # exclude = ['password',]
 
     def create(self, validated_data):
@@ -73,7 +83,6 @@ class ShoppingListDetailSerializer(serializers.ModelSerializer):
     departments = DepartmentSerializer(many=True, read_only=True)
     list_items = ShoppingListItemSerializer(many=True, read_only=True)
     shares = UserSerializer(read_only=True, many=True)
-
 
     class Meta:
         model = ShoppingList

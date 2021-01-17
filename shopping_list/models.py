@@ -52,3 +52,14 @@ class ShoppingListItem(models.Model):
         ordering = ['department']
         # Prevent duplicate entries
         unique_together = ['user', 'item', 'shopping_list']
+
+
+class UserProfile(models.Model):
+    '''Model that holds additional user information, including Push Notification token.'''
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile')
+    push_token = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        unique_together = ['user', 'push_token']
+        

@@ -8,9 +8,9 @@ from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIV
 from rest_framework import permissions, authentication, status
 from rest_framework.serializers import ListSerializer
 from rest_framework.status import HTTP_404_NOT_FOUND
-from .models import Department, ShoppingList, ShoppingListItem
+from .models import Department, ShoppingList, ShoppingListItem, UserProfile
 from .serializers import DepartmentDetailSerializer, DepartmentSerializer, ShoppingListRUDSerializer, ShoppingListSerializer, \
-                    ShoppingListItemSerializer, ShoppingListDetailSerializer, ShoppingListItemDetailSerializer, UserSerializer
+                    ShoppingListItemSerializer, ShoppingListDetailSerializer, ShoppingListItemDetailSerializer, UserProfileSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -156,7 +156,7 @@ class UserCreate(CreateAPIView):
 class UserList(ListAPIView):
     '''List all usernames.'''
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().select_related('profile')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
@@ -171,18 +171,36 @@ class UserDetail(RetrieveAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
 
+class UserProfileDetail(RetrieveUpdateDestroyAPIView):
+    '''Retrieve, update or destroy user profile fields.'''
+
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_queryset(self):
+        queryset = UserProfile.objects.filter(user=self.request.user, id=self.kwargs['pk'])
+        queryset.filter(user=self.request.user)
+        return queryset
+
+
 class CustomAuthToken(ObtainAuthToken):
     '''Returns an auth token and user info when the user logs in with username and password.'''
 
     def post(self, request, *args, **kwargs):
+
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+        # create user profile for storing push token
+        profile, created = UserProfile.objects.get_or_create(user=user)
+
         return Response({
             'token': token.key,
             'user': {
                 'id': user.pk,
-                'username': user.username
+                'username': user.username,
+                'push_token': profile.push_token
             }
         })

@@ -14,6 +14,7 @@ urlpatterns = [
     path('users/', views.UserList.as_view()),
     path('users/register/', views.UserCreate.as_view()),
     path('users/<pk>/', views.UserDetail.as_view()),
+    path('users/profile/<pk>/', views.UserProfileDetail.as_view()),
 ]
 
 urlpatterns += [

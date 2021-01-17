@@ -201,6 +201,7 @@ class CustomAuthToken(ObtainAuthToken):
             'user': {
                 'id': user.pk,
                 'username': user.username,
-                'push_token': profile.push_token
+                'push_token': profile.push_token,
+                'profile_id': profile.pk
             }
         })

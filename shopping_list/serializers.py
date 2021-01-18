@@ -10,7 +10,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-
         fields = ['id', 'user', 'push_token']
 
 
@@ -19,13 +18,12 @@ class UserSerializer(serializers.ModelSerializer):
     # departments = serializers.PrimaryKeyRelatedField(many=True, queryset=Department.objects.all())
     # shopping_lists = serializers.PrimaryKeyRelatedField(many=True, queryset=ShoppingList.objects.all())
     # list_items = serializers.PrimaryKeyRelatedField(many=True, queryset=ShoppingListItem.objects.all())
-    profile = UserProfileSerializer(read_only=True, many=True)
-    
+    # profile = UserProfileSerializer(read_only=True, many=True)
+
     class Meta:
         model = User
         # fields = ['id', 'username', 'departments', 'shopping_lists', 'list_items']
-        fields = ['id', 'username', 'password', 'profile']
-        # exclude = ['password',]
+        fields = ['id', 'username', 'password']
 
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)

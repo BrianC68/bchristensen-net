@@ -82,6 +82,31 @@ class ShoppingListRUD(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
 
+    def send_push_notification(self, share_user_id, sender, list_title):
+        headers = {
+            'Accept': 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-Type': 'application/json'
+        }
+
+        push_token = UserProfile.objects.get(user=share_user_id).push_token
+        
+        if push_token is not None:
+            body = {
+                'to': push_token,
+                'title': 'sh@ppinglist Notification',
+                'body': f'{sender} has shared a list with you,  {list_title}.',
+                'data': { 'sender': sender.username },
+            }
+            body_json = json.dumps(body)
+
+            try:
+                r = requests.post('https://exp.host/--/api/v2/push/send', data=body_json, headers=headers)
+                # print(r)
+            except requests.exceptions.RequestException as err:
+                # print(err)
+                pass
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -95,6 +120,7 @@ class ShoppingListRUD(RetrieveUpdateDestroyAPIView):
                     list.shares.remove(share_user.id)
                 else:
                     list.shares.add(share_user.id)
+                    self.send_push_notification(share_user.id, request.user, request.data['name']) # Send push notification to shared user
             except User.DoesNotExist:
                 return Response({"non_field_errors": ["User does not exist!"]}, status=HTTP_404_NOT_FOUND)
                 

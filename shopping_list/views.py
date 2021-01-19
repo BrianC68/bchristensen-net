@@ -96,7 +96,8 @@ class ShoppingListRUD(RetrieveUpdateDestroyAPIView):
                 'to': push_token,
                 'title': 'sh@ppinglist Notification',
                 'body': f'{sender} has shared a list with you,  {list_title}.',
-                'data': { 'sender': sender.username },
+                'data': { 'sender': sender },
+                'sound': 'default',
             }
             body_json = json.dumps(body)
 
@@ -120,7 +121,7 @@ class ShoppingListRUD(RetrieveUpdateDestroyAPIView):
                     list.shares.remove(share_user.id)
                 else:
                     list.shares.add(share_user.id)
-                    self.send_push_notification(share_user.id, request.user, request.data['name']) # Send push notification to shared user
+                    self.send_push_notification(share_user.id, request.user.username, request.data['name']) # Send push notification to shared user
             except User.DoesNotExist:
                 return Response({"non_field_errors": ["User does not exist!"]}, status=HTTP_404_NOT_FOUND)
                 
@@ -151,6 +152,7 @@ class ShoppingListItems(ListCreateAPIView):
                 'title': 'sh@ppinglist Notification',
                 'body': f'{sender} has added {list_item} to {list_title} list.',
                 'data': { 'sender': sender },
+                'sound': 'default',
             }
             body_json = json.dumps(body)
 
@@ -212,6 +214,7 @@ class ShoppingListItemDetail(RetrieveUpdateDestroyAPIView):
                 'title': 'sh@ppinglist Notification',
                 'body': f'{sender} has added or updated {list_item} on {list_title} list.',
                 'data': { 'sender': sender },
+                'sound': 'default',
             }
             body_json = json.dumps(body)
 

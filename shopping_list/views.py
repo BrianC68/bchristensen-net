@@ -97,6 +97,7 @@ class ShoppingListRUD(RetrieveUpdateDestroyAPIView):
                 'body': f'{sender} has shared a list with you,  {list_title}.',
                 'data': { 'sender': sender },
                 'sound': 'default',
+                'channelId': 'sh@ppingListShare',
             }
             body_json = json.dumps(body)
 
@@ -149,9 +150,10 @@ class ShoppingListItems(ListCreateAPIView):
             body = {
                 'to': token,
                 'title': 'sh@ppinglist Notification',
-                'body': f'{sender} has added {list_item} to {list_title} list.',
+                'body': f'{sender} has added {list_item} to {list_title}',
                 'data': { 'sender': sender },
                 'sound': 'default',
+                'channelId': 'sh@ppingList',
             }
             body_json = json.dumps(body)
 
@@ -214,9 +216,10 @@ class ShoppingListItemDetail(RetrieveUpdateDestroyAPIView):
             body = {
                 'to': token,
                 'title': 'sh@ppinglist Notification',
-                'body': f'{sender} has added or updated {list_item} on {list_title} list.',
+                'body': f'{sender} has added or updated {list_item} on {list_title}',
                 'data': { 'sender': sender },
                 'sound': 'default',
+                'channelId': 'sh@ppingList',
             }
             body_json = json.dumps(body)
 

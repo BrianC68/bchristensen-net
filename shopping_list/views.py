@@ -1,6 +1,4 @@
-from re import error
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -10,9 +8,10 @@ from rest_framework import permissions, authentication, status
 from rest_framework.serializers import ListSerializer
 from rest_framework.status import HTTP_404_NOT_FOUND
 from .models import Department, ShoppingList, ShoppingListItem, UserProfile
-from .serializers import DepartmentDetailSerializer, DepartmentSerializer, ShoppingListRUDSerializer, ShoppingListSerializer, \
-                    ShoppingListItemSerializer, ShoppingListDetailSerializer, ShoppingListItemDetailSerializer, \
-                    UserProfileSerializer, UserSerializer
+from .serializers import DepartmentDetailSerializer, DepartmentSerializer, \
+                    ShoppingListRUDSerializer, ShoppingListSerializer, \
+                    ShoppingListItemSerializer, ShoppingListDetailSerializer, \
+                    ShoppingListItemDetailSerializer, UserProfileSerializer, UserSerializer
 
 import requests
 import json
@@ -165,30 +164,33 @@ class ShoppingListItems(ListCreateAPIView):
 
     def get_queryset(self):
         user_items = ShoppingListItem.objects.filter(shopping_list=self.kwargs['pk'], user=self.request.user)
-        shared_items = ShoppingListItem.objects.filter(shopping_list=self.kwargs['pk'], shares=self.request.user)
+        shared_items = ShoppingListItem.objects.filter(shopping_list=self.kwargs['pk'], shopping_list__shares=self.request.user)
         queryset = user_items |shared_items
         return queryset
 
     def perform_create(self, serializer):
-        data = dict(serializer.validated_data.items())
-        # adding_item = data['on_list']
-        sender = self.request.user.username
-        sender_id = self.request.user.id
-        list_title = data['shopping_list']
-        list_item = data['item']
-        list_owner = ShoppingList.objects.get(id=data['shopping_list'].id).user.id
-        list_shares = [list_owner]
-        shares = list(ShoppingList.objects.filter(id=data['shopping_list'].id).values_list('shares', flat=True))
-        for share in shares:
-            if share not in list_shares:
-                list_shares.append(share)
-        list_shares.remove(sender_id) # remove the sender, don't need to notify the sender of the notification
-        # print(list_shares)
+        notifications = self.request.data['notifications']
+        if notifications:
+            data = dict(serializer.validated_data.items())
+            # adding_item = data['on_list']
+            sender = self.request.user.username
+            sender_id = self.request.user.id
+            list_title = data['shopping_list']
+            list_item = data['item']
+            list_owner = ShoppingList.objects.get(id=data['shopping_list'].id).user.id
+            list_shares = [list_owner]
+            shares = list(ShoppingList.objects.filter(id=data['shopping_list'].id).values_list('shares', flat=True))
+            if notifications:
+                for share in shares:
+                    if share not in list_shares:
+                        list_shares.append(share)
+            list_shares.remove(sender_id) # remove the sender, don't need to notify the sender of the notification
+            # print(list_shares)
 
-        push_tokens = UserProfile.objects.filter(user__in=list_shares, push_token__isnull=False).values_list('push_token', flat=True)
-        # print(push_tokens)
-        if len(push_tokens) >= 1:
-            self.send_push_notifications(push_tokens, sender, list_title, list_item)
+            push_tokens = UserProfile.objects.filter(user__in=list_shares, push_token__isnull=False).values_list('push_token', flat=True)
+            # print(push_tokens)
+            if len(push_tokens) >= 1:
+                self.send_push_notifications(push_tokens, sender, list_title, list_item)
 
         serializer.save(user=self.request.user)
 
@@ -229,24 +231,27 @@ class ShoppingListItemDetail(RetrieveUpdateDestroyAPIView):
         serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
-        data = dict(serializer.validated_data.items())
-        adding_item = data['on_list']
-        sender = self.request.user.username
-        sender_id = self.request.user.id
-        list_title = data['shopping_list']
-        list_item = data['item']
-        list_owner = ShoppingList.objects.get(id=data['shopping_list'].id).user.id
-        list_shares = [list_owner]
-        shares = list(ShoppingList.objects.filter(id=data['shopping_list'].id).values_list('shares', flat=True))
-        for share in shares:
-            if share not in list_shares:
-                list_shares.append(share)
-        list_shares.remove(sender_id) # remove the sender, don't need to notify the sender of the notification
-        # print(list_shares)
+        notifications = self.request.data['notifications']
+        if notifications:
+            data = dict(serializer.validated_data.items())
+            adding_item = data['on_list']
+            sender = self.request.user.username
+            sender_id = self.request.user.id
+            list_title = data['shopping_list']
+            list_item = data['item']
+            list_owner = ShoppingList.objects.get(id=data['shopping_list'].id).user.id
+            list_shares = [list_owner]
+            shares = list(ShoppingList.objects.filter(id=data['shopping_list'].id).values_list('shares', flat=True))
+            for share in shares:
+                if share not in list_shares:
+                    list_shares.append(share)
+            list_shares.remove(sender_id) # remove the sender, don't need to notify the sender of the notification
+            # print(list_shares)
 
-        push_tokens = UserProfile.objects.filter(user__in=list_shares, push_token__isnull=False).values_list('push_token', flat=True)
-        if len(push_tokens) >= 1 and adding_item:
-            self.send_push_notifications(push_tokens, sender, list_title, list_item)
+            push_tokens = UserProfile.objects.filter(user__in=list_shares, push_token__isnull=False).values_list('push_token', flat=True)
+            if notifications:
+                if len(push_tokens) >= 1 and adding_item:
+                    self.send_push_notifications(push_tokens, sender, list_title, list_item)
 
         return super().perform_update(serializer)
 
@@ -259,11 +264,7 @@ class ShoppingListDetail(ListAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     
     def get_queryset(self):
-        # push_token = UserProfile.objects.get(user=self.request.user).push_token
-        # print(push_token)
         user_lists = ShoppingList.objects.filter(user=self.request.user, id=self.kwargs['pk'])
-        # for list in user_lists:
-        #     list.owner_push_token = push_token
         shared_lists = ShoppingList.objects.filter(shares=self.request.user, id=self.kwargs['pk'])
         queryset = user_lists | shared_lists
         return queryset
